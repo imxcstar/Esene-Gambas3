@@ -1,0 +1,78 @@
+' Gambas module file
+
+Public EseneConfigVersion As String = "1.0.0-linux"
+
+Public SaveDataFileName As String = "data.txt"
+Public SaveJsFileName As String = "r.js"
+Public SaveConfigFileName As String = "c.s"
+
+Public Sub AddLog(Value As String)
+  
+  FMain.ListBox1.Add(Now() & "---" & Value)
+  FMain.ListBox1.Index = FMain.ListBox1.Count - 1
+  
+End
+
+Public Function Bytes2Hex(Value As Byte[]) As String 
+  
+  Dim TRetData As String 
+  Dim THexData As String 
+  Dim TData As Byte[]
+  TData = Value
+  Dim i As Long 
+  For i = 0 To TData.Length - 1
+    THexData = String.UCase(Hex(TData[i]))
+    If Len(THexData) = 1 Then
+      THexData = "0" & THexData
+    Endif
+    TRetData = TRetData & THexData & " "
+  Next
+  Return TRetData
+  
+End
+
+Public Function String2Bytes(Value As String) As Byte[]
+  
+  Dim TRetData As Byte[]
+  Dim TData As String
+  TData = Value
+  TRetData = Byte[].FromString(TData) 
+  Return TRetData
+  
+End
+
+Public Function Hex2Bytes(Value As String) As Byte[]
+  
+  Dim TRetData As New Byte[]
+  Dim TData As String
+  Dim TDatas As String[]
+  Dim i As Long
+  TData = Value
+  TDatas = Split(TData, " ")
+  For i = 0 To TDatas.Length - 1
+    TRetData.Add(Val("&H" & TDatas[i] & "&"))
+  Next
+  Return TRetData
+  
+End
+
+Public Sub SaveSerialPortConfig(PortName As String, Speed As Integer, Parity As String, DataBits As Integer, StopBits As Integer, ReceiveDataMode As Byte, SendDataMode As Byte, IsTiming As Boolean, TimingTime As Long, ReceiveRecord As Long, SendRecord As Long, SendData As String, SavePath As String)
+  Dim JsonConfig As New JSONCollection
+  JsonConfig.Add(PortName, "PortName")
+  JsonConfig.Add(Speed, "Speed")
+  JsonConfig.Add(Parity, "Parity")
+  JsonConfig.Add(DataBits, "DataBits")
+  JsonConfig.Add(StopBits, "StopBits")
+  JsonConfig.Add(ReceiveDataMode, "ReceiveDataMode")
+  JsonConfig.Add(SendDataMode, "SendDataMode")
+  JsonConfig.Add(IsTiming, "IsTiming")
+  JsonConfig.Add(TimingTime, "TimingTime")
+  JsonConfig.Add(ReceiveRecord, "ReceiveRecord")
+  JsonConfig.Add(SendRecord, "SendRecord")
+  JsonConfig.Add(SendData, "SendData")
+  
+  JsonConfig.Add(EseneConfigVersion, "ConfigVersion")
+  
+  File.Save(SavePath, JSON.Encode(JsonConfig))
+End
+

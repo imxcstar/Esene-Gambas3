@@ -1,0 +1,1 @@
+{"PortName":"/dev/ttyUSB0","Speed":9600,"Parity":"None","DataBits":8,"StopBits":1,"ReceiveDataMode":0,"SendDataMode":0,"IsTiming":false,"TimingTime":300,"ReceiveRecord":92,"SendRecord":0,"SendData":"","ConfigVersion":"1.0.0-linux"}

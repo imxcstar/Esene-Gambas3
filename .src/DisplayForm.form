@@ -1,0 +1,9 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,88,51)
+  Text = ("Display Area")
+  { WebView1 WebView
+    MoveScaled(15,15,30,29)
+  }
+}

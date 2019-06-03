@@ -1,0 +1,41 @@
+' Gambas class file
+
+
+Public Sub Button1_Click()
+  
+  Dim SavePath As String = DirBox1.Value
+  Dim ProjectName As String = TextBox1.Text
+  If SavePath = "" Or ProjectName = "" Then
+    Message("Please choose Project path or Set Project name")
+    Return
+  Endif
+  
+  If Right(SavePath, 1) <> "/" Then
+    SavePath &= "/"
+  Endif
+  
+  Dim ProjectPath As String = SavePath & ProjectName
+  
+  If Right(ProjectPath, 1) <> "/" Then
+    ProjectPath &= "/"
+  Endif
+
+  Try Mkdir ProjectPath
+  If Error
+    Message(Error.Text)
+    Return
+  Endif
+  
+  File.Save(ProjectPath & FunModule.SaveDataFileName, "")
+  File.Save(ProjectPath & FunModule.SaveJsFileName, File.Load("Default-Code.js"))
+  
+  FMain.NewProjectSub(ProjectPath, ProjectName)
+
+  Me.Delete()
+End
+
+Public Sub Button2_Click()
+
+  Me.Delete()
+
+End

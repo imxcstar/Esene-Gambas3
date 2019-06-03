@@ -1,0 +1,174 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,64,88)
+  Text = ("Serial Port Setting")
+  Resizable = False
+  { ScriptEdit Menu
+    Text = ("Script Edit")
+    { ShowScriptEdit Menu
+      Text = ("Show")
+    }
+  }
+  { DisplayArea Menu
+    Text = ("Display Area")
+    { ShowDisplayArea Menu
+      Text = ("Show")
+    }
+  }
+  { Label6 Label
+    MoveScaled(1,78,13,3)
+    Text = ("Receive(byte):")
+    Alignment = Align.Right
+  }
+  { Label7 Label
+    MoveScaled(1,81,13,3)
+    Text = ("Send(byte):")
+    Alignment = Align.Right
+  }
+  { Label8 Label
+    MoveScaled(15,78,17,3)
+    Text = ("0")
+  }
+  { Label9 Label
+    MoveScaled(15,81,17,3)
+    Text = ("0")
+  }
+  { Button4 Button
+    MoveScaled(49,78,14,6)
+    Enabled = False
+    Text = ("Send")
+  }
+  { Panel4 Panel
+    MoveScaled(1,1,62,18)
+    Border = Border.Plain
+    { Label2 Label
+      MoveScaled(1,7,10,4)
+      AutoResize = True
+      Text = ("Speed: ")
+      Alignment = Align.Right
+    }
+    { Label1 Label
+      MoveScaled(1,1,10,4)
+      AutoResize = True
+      Text = ("Port Name: ")
+      Alignment = Align.Right
+    }
+    { ComboBox1 ComboBox
+      MoveScaled(12,1,35,4)
+      ReadOnly = True
+    }
+    { Button1 Button
+      MoveScaled(48,1,13,4)
+      Text = ("Scan")
+    }
+    { ComboBox2 ComboBox
+      MoveScaled(12,7,35,4)
+      ReadOnly = True
+      List = [("600"), ("1200"), ("2400"), ("4800"), ("9600"), ("14400"), ("19200"), ("28800"), ("38400"), ("57600"), ("115200"), ("230400"), ("460800")]
+    }
+    { Label3 Label
+      MoveScaled(1,13,10,4)
+      AutoResize = True
+      Text = ("Parity: ")
+      Alignment = Align.Right
+    }
+    { ComboBox3 ComboBox
+      MoveScaled(12,13,11,4)
+      ReadOnly = True
+      List = [("None"), ("Even"), ("Odd")]
+    }
+    { Label4 Label
+      MoveScaled(23,13,9,4)
+      AutoResize = True
+      Text = ("DataBits: ")
+      Alignment = Align.Right
+    }
+    { ComboBox4 ComboBox
+      MoveScaled(33,13,9,4)
+      ReadOnly = True
+      List = [("4"), ("5"), ("6"), ("7"), ("8")]
+    }
+    { Label5 Label
+      MoveScaled(42,13,9,4)
+      AutoResize = True
+      Text = ("StopBits: ")
+      Alignment = Align.Right
+    }
+    { ComboBox5 ComboBox
+      MoveScaled(52,13,9,4)
+      ReadOnly = True
+      List = [("1"), ("1.5"), ("2")]
+    }
+    { Sp #SerialPort
+      #MoveScaled(1,5)
+    }
+  }
+  { Panel5 Panel
+    MoveScaled(1,21,62,27)
+    Border = Border.Plain
+    { TextArea1 TextArea
+      MoveScaled(1,1,60,20)
+    }
+    { Button3 Button
+      MoveScaled(1,22,11,4)
+      Text = ("Clear")
+    }
+    { Panel1 Panel
+      MoveScaled(31,22,30,4)
+      { RadioButton1 RadioButton
+        MoveScaled(1,1,14,2)
+        Text = ("Text Mode")
+      }
+      { RadioButton2 RadioButton
+        MoveScaled(16,1,14,2)
+        Text = ("Hex Mode")
+      }
+    }
+  }
+  { TextLabel1 TextLabel
+    MoveScaled(1,19,14,3)
+    Text = ("Receive Region")
+  }
+  { Panel6 Panel
+    MoveScaled(1,50,62,27)
+    Border = Border.Plain
+    { Panel3 Panel
+      MoveScaled(1,22,29,4)
+      { CheckBox1 CheckBox
+        MoveScaled(0,1,19,2)
+        Text = ("Timing Send(ms)")
+      }
+      { TextBox1 TextBox
+        MoveScaled(20,0.5714,8,3)
+        Visible = False
+        Text = ("300")
+      }
+    }
+    { Panel2 Panel
+      MoveScaled(31,22,30,4)
+      { RadioButton3 RadioButton
+        MoveScaled(1,1,14,2)
+        Text = ("Text Mode")
+      }
+      { RadioButton4 RadioButton
+        MoveScaled(16,1,14,2)
+        Text = ("Hex Mode")
+      }
+    }
+    { TextArea2 TextArea
+      MoveScaled(1,1,60,20)
+    }
+    { Timer1 #Timer
+      #MoveScaled(17,10)
+    }
+  }
+  { TextLabel2 TextLabel
+    MoveScaled(1,48,14,3)
+    Text = ("Send Region")
+  }
+  { Button2 Button
+    MoveScaled(49,8,13,4)
+    Text = ("Open")
+  }
+}

@@ -1,0 +1,62 @@
+' Gambas class file
+
+Public CIndex As Long 
+Public ProjectPath As String
+Public ProjectName As String
+Public TMeDisplayForm As DisplayForm
+Public TCode As String 
+
+
+Public Sub Form_Resize()
+
+  Editor1.Move(0, 0, Me.Width, Me.Height)
+
+End
+
+Public Sub Form_Open()
+
+  
+
+End
+
+Public Sub Form_Close()
+
+  Me.Hide()
+  Stop Event
+
+End
+
+Public Sub LoadInitJsCode()
+  
+  Editor1.Text = File.Load("Default-Code.js")
+  TCode = Editor1.Text
+  
+End
+
+Public Sub LoadProjectJsCode()
+  
+  Editor1.Text = File.Load(ProjectPath & FunModule.SaveJsFileName)
+  TCode = Editor1.Text
+  
+End
+
+Public Sub Form_Show()
+
+  
+  Editor1.Highlight = 7
+  Editor1.TabSize = 2
+
+End
+
+Public Sub Editor1_Change()
+
+  TCode = Editor1.Text
+  File.Save(ProjectPath & FunModule.SaveJsFileName, TCode)
+
+End
+
+Public Sub Editor1_KeyPress()
+
+  
+
+End

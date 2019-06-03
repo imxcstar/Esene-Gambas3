@@ -1,0 +1,34 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,114,41)
+  Text = ("Esene")
+  Maximized = True
+  { Project Menu
+    Text = ("Project")
+    { NewProject Menu
+      Text = ("New Project")
+    }
+    { OpenProject Menu
+      Text = ("Open Project")
+    }
+    { CloseALLProject Menu
+      Text = ("Close ALL Project")
+    }
+  }
+  { OpenProjectList Menu
+    Text = ("Open Project List")
+  }
+  { Panel1 Panel
+    MoveScaled(1,1,108,25)
+    Border = Border.Plain
+    { !ListBox1 ListBox
+      MoveScaled(1,3,106,20)
+      #Public = True
+    }
+    { Label1 Label
+      MoveScaled(1,0,6,3)
+      Text = ("Logs")
+    }
+  }
+}

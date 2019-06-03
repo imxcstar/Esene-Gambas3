@@ -1,0 +1,98 @@
+' Gambas class file
+
+'tar -zxvf Esene.tar.gz && cd Esene && gbc3 && gba3 && echo -e "[Desktop Entry]\nVersion=1.0\nType=Application\nTerminal=false\nName=Esene\nExec=`pwd`/Esene.gambas\nIcon=`pwd`/p.png\nCategories=Development;" > ~/Desktop/Esene.desktop
+Public SpFormList As New SerialPortForm[]
+Public ProjectMenuList As New Menu[]
+
+Public Sub NewProject_Click()
+
+  NewProjectForm.Show()
+
+End
+
+Public Sub Form_Close()
+
+  'Dim i As Long 
+  'For i = 0 To SpFormList.Count - 1
+  '  SpFormList[i].Delete()
+  'Next
+  
+  Quit
+
+End
+
+Public Sub Form_Open()
+
+
+
+End
+
+Public Sub NewProjectSub(ProjectPath As String, ProjectName As String)
+  
+  Dim TF As New SerialPortForm
+  SpFormList.Add(TF, SpFormList.Count)
+  TF.CIndex = SpFormList.Count - 1
+  TF.Text = TF.CIndex & " - " & TF.Text & " - Project - " & ProjectName
+  TF.ProjectPath = ProjectPath
+  TF.ProjectName = ProjectName
+  SpFormList[SpFormList.Count - 1].Show()
+  Dim NewMenu As New Menu(OpenProjectList)
+  ProjectMenuList.Add(NewMenu, ProjectMenuList.Count)
+  NewMenu.Text = TF.CIndex & ". " & ProjectName
+  NewMenu.Action = "MenuAction-" & TF.CIndex
+  
+End
+
+Public Sub DelMenuProject(SIndex As Long)
+  
+  ProjectMenuList[SIndex].Delete()
+  
+End
+
+
+Public Sub Action_Activate(key As String) As Boolean
+  Select Case Split(key, "-")[0]
+  Case "MenuAction"
+    SpFormList[Val(Split(key, "-")[1])].Show
+  End Select
+End
+
+Public Sub CloseALLProject_Click()
+
+  Dim i As Long 
+  For i = 0 To SpFormList.Count - 1
+    Try SpFormList[i].CloseProjectSub()
+  Next
+  For i = 0 To ProjectMenuList.Count - 1
+    Try ProjectMenuList[i].Delete()
+  Next
+  
+End
+
+Public Sub OpenProject_Click()
+
+  If Dialog.SelectDirectory() Then Return
+  
+  Dim OpenPath As String = Dialog.Path
+  Dim OpenProjectName As String 
+  
+  If Right(OpenPath, 1) <> "/" Then
+    OpenProjectName = Split(OpenPath, "/")[Split(OpenPath, "/").Count - 1]
+    OpenPath &= "/"
+  Else
+    OpenProjectName = Split(OpenPath, "/")[Split(OpenPath, "/").Count - 2]
+  Endif
+  
+  Dim TF As New SerialPortForm
+  SpFormList.Add(TF, SpFormList.Count)
+  TF.CIndex = SpFormList.Count - 1
+  TF.Text = TF.CIndex & " - " & TF.Text & " - Project - " & OpenProjectName
+  TF.ProjectPath = OpenPath
+  TF.ProjectName = OpenProjectName
+  SpFormList[SpFormList.Count - 1].Show()
+  Dim NewMenu As New Menu(OpenProjectList)
+  ProjectMenuList.Add(NewMenu, ProjectMenuList.Count)
+  NewMenu.Text = TF.CIndex & ". " & OpenProjectName
+  NewMenu.Action = "MenuAction-" & TF.CIndex
+  
+End

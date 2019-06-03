@@ -1,0 +1,75 @@
+' Gambas class file
+
+Public CIndex As Long 
+Public ProjectPath As String
+Public ProjectName As String
+Private SaveFile As File
+
+Public Sub Form_Resize()
+
+  WebView1.Move(0, 0, Me.Width, Me.Height)
+
+End
+
+
+Public Sub Form_Close()
+
+  Me.Hide()
+  Stop Event
+
+End
+
+Public Sub WebView1_MouseDown()
+
+  
+
+End
+
+Public Sub Form_Open()
+
+
+
+End
+
+Public Sub SetScript(TScript As String)
+  
+  WebView1.Html = "<script>" & TScript & "</script>"
+  
+End
+
+Public Sub InitJs()
+  
+  WebView1.Eval("init();")
+  
+  If Exist(ProjectPath & FunModule.SaveDataFileName) = False Then
+    SaveFile.Save(ProjectPath & FunModule.SaveDataFileName, "")
+  Endif
+  
+  Try SaveFile = Open ProjectPath & FunModule.SaveDataFileName For Append
+  
+  If Error Then
+    Message("Open Data.txt Error: " & Error.Text)
+  Endif
+  
+End
+
+Public Sub Run(TValue As String)
+  
+  Dim ret As Variant = WebView1.Eval("run(decodeURIComponent(\"" & Replace(URL.Encode(TValue), "+", " ") & "\"));")
+  
+  If ret = Null Then Return
+  
+  Dim data As String = Str(ret)
+  
+  If data = "" Then Return
+  
+  Write #SaveFile, data & "\r\n"
+  
+End
+
+Public Sub CloseDataFile()
+  
+  Try SaveFile.Close()
+  
+End
+

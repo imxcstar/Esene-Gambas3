@@ -1,0 +1,28 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,60,26)
+  Resizable = False
+  { Label1 Label
+    MoveScaled(1,1,10,3)
+    Text = ("SavePath")
+  }
+  { Label2 Label
+    MoveScaled(1,10,12,3)
+    Text = ("ProjectName")
+  }
+  { Button1 Button
+    MoveScaled(38,20,10,4)
+    Text = ("New")
+  }
+  { Button2 Button
+    MoveScaled(49,20,10,4)
+    Text = ("Cancle")
+  }
+  { TextBox1 TextBox
+    MoveScaled(1,14,58,4)
+  }
+  { DirBox1 DirBox
+    MoveScaled(1,5,58,4)
+  }
+}

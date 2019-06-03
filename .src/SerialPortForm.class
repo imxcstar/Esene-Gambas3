@@ -1,0 +1,389 @@
+' Gambas class file
+
+Public CIndex As Long 
+Public ProjectPath As String
+Public ProjectName As String
+
+Private IsTiming As Boolean
+Private IsOpenPort As Boolean
+Private TimingTime As Long
+Private RDataMode As Byte
+Private SDataMode As Byte
+Private RDataLen As Long
+Private SDataLen As Long
+Private MeScriptEditForm As New ScriptEditForm
+Private MeDisplayForm As New DisplayForm
+Private IsLoadConfigIng As Boolean = True
+
+Private Sub ScanPort()
+
+  ComboBox1.Clear()
+  ComboBox1.Text = ""
+  Dim deviceName As String
+  For Each deviceName In Dir("/dev", "ttyUSB*", gb.Device)
+    ComboBox1.Add("/dev/" & deviceName)
+  Next
+  ComboBox1.index = 0
+
+End
+
+Public Sub Button1_Click()
+
+  ScanPort()
+
+End
+
+Public Sub Form_Show()
+
+  ComboBox2.Index = 4
+  ComboBox3.Index = 0
+  ComboBox4.Index = 4
+  ComboBox5.Index = 0
+  TimingTime = 300
+  ScanPort()
+  
+  MeScriptEditForm.CIndex = CIndex
+  MeScriptEditForm.ProjectPath = ProjectPath
+  MeScriptEditForm.ProjectName = ProjectName
+  MeScriptEditForm.TMeDisplayForm = MeDisplayForm
+  
+  MeDisplayForm.CIndex = CIndex
+  MeDisplayForm.ProjectPath = ProjectPath
+  MeDisplayForm.ProjectName = ProjectName
+  
+  MeScriptEditForm.Text = CIndex & " - " & MeScriptEditForm.Text & " - Project - " & ProjectName
+  MeDisplayForm.Text = CIndex & " - " & MeDisplayForm.Text & " - Project - " & ProjectName
+  
+  LoadConfig()
+  
+End
+
+Private Sub SetTimingTime()
+  
+  Dim TData As String 
+  TData = TextBox1.Text
+  If IsNumber(TData) = True Then
+    TimingTime = Val(TData)
+    Timer1.Delay = TimingTime
+  Endif
+  
+End
+
+Public Sub CheckBox1_Click()
+
+  TextBox1.Visible = Not TextBox1.Visible
+  IsTiming = Not IsTiming
+  If IsTiming = True Then
+    SetTimingTime()
+  Endif
+  SaveConfig()
+  
+End
+
+Private Sub CloseEvent()
+  
+  If IsOpenPort = False Then Return
+  Timer1.Enabled = False
+  Sp.Close()
+  IsOpenPort = False
+  Button2.Text = "Open"
+  Panel4.Enabled = True
+  Button4.Enabled = False
+  Panel3.Enabled = True
+  
+  MeDisplayForm.CloseDataFile()
+  
+End
+
+Public Sub Button2_Click()
+
+  If IsOpenPort = False Then
+    Sp.PortName = ComboBox1.Text
+    Sp.Speed = ComboBox2.Text
+    Sp.Parity = ComboBox3.Index
+    Sp.DataBits = ComboBox4.Text
+    Sp.StopBits = ComboBox5.Text
+    Sp.FlowControl = 0
+    
+    MeDisplayForm.SetScript(MeScriptEditForm.TCode)
+  
+    MeDisplayForm.InitJs()
+    
+    Try
+      Sp.Open()
+    If Error Then
+      Message(Error.Text)
+      Return
+    Endif
+    
+    IsOpenPort = True
+    Button2.Text = "Close"
+    Panel4.Enabled = False
+    Button4.Enabled = True
+    Panel3.Enabled = False
+    If IsTiming = True Then
+      Timer1.Enabled = True
+    Endif
+  Else
+    CloseEvent()
+  Endif
+
+End
+
+Public Sub Sp_Read()
+
+  Dim RDataL As Long 
+  If RDataMode = 0 Then
+    Dim RData As String
+    RDataL = Lof(Sp)
+    Try Read #Sp, RData, RDataL
+    
+    If Error Then 
+      Return
+    Endif 
+    
+    RDataLen = RDataLen + RDataL
+    Label8.Text = RDataLen
+    TextArea1.Text = TextArea1.Text & RData
+    TextArea1.Pos = Len(TextArea1.Text)
+    
+    MeDisplayForm.Run(RData)
+  Else
+    Dim RDataB As New Byte[]
+    RDataL = Lof(Sp)
+    RDataB.Resize(RDataL)
+    Try RDataB.Read(Sp, 0, RDataL)
+    
+    If Error Then 
+      FunModule.AddLog(Error.Text)
+      Return
+    Endif 
+    
+    RDataLen = RDataLen + RDataL
+    Label8.Text = RDataLen
+    Dim TDataz As String = FunModule.Bytes2Hex(RDataB)
+    TextArea1.Text = TextArea1.Text & TDataz & "\r\n"
+    TextArea1.Pos = Len(TextArea1.Text)
+    
+    MeDisplayForm.Run(TDataz)
+  Endif
+
+End
+
+Public Sub Form_Close()
+
+  CloseEvent()
+  MeScriptEditForm.Delete()
+  MeDisplayForm.Delete()
+  FMain.DelMenuProject(CIndex)
+
+End
+
+Public Sub RadioButton1_Click()
+
+  RDataMode = 0
+  SaveConfig()
+
+End
+
+Public Sub RadioButton2_Click()
+
+  RDataMode = 1
+  SaveConfig()
+
+End
+
+Public Sub RadioButton3_Click()
+
+  SDataMode = 0
+  SaveConfig()
+  
+End
+
+Public Sub RadioButton4_Click()
+
+  SDataMode = 1
+  SaveConfig()
+
+End
+
+Public Sub Button3_Click()
+
+  TextArea1.Text = ""
+
+End
+
+Private Sub SendSerialPortData()
+  
+  If TextArea2.Text = "" Then Return
+  
+  If SDataMode = 0 Then
+    Dim SData As String 
+    SData = TextArea2.Text
+    Try Write #Sp, SData
+    
+    If Error Then
+      FunModule.AddLog(Error.Text)
+      Return
+    Endif
+    
+    SDataLen = SDataLen + Len(SData)
+    Label9.Text = SDataLen
+  Else
+    Dim SDataB As Byte[]
+    SDataB = FunModule.Hex2Bytes(TextArea2.Text)
+    Try SDataB.Write(Sp, 0, SDataB.Length)
+    
+    If Error Then
+      FunModule.AddLog(Error.Text)
+      Return
+    Endif
+    
+    SDataLen = SDataLen + SDataB.Length
+    Label9.Text = SDataLen
+  Endif
+  
+  SaveConfig()
+  
+End
+
+Public Sub Button4_Click()
+
+  SendSerialPortData()
+  SaveConfig()
+
+End
+
+Public Sub Timer1_Timer()
+
+  SendSerialPortData()
+
+End
+
+Public Sub TextBox1_Change()
+
+  SetTimingTime()
+  SaveConfig()
+  
+End
+
+
+Public Sub ShowScriptEdit_Click()
+
+  MeScriptEditForm.Show()
+  
+End
+
+Public Sub ShowDisplayArea_Click()
+
+  MeDisplayForm.Show()
+
+End
+
+Public Sub Form_Open()
+
+  
+
+End
+
+Public Sub CloseProjectSub()
+  
+  Me.Delete()
+  
+End
+
+Private Sub SaveConfig()
+  
+  If IsLoadConfigIng Then Return 
+  
+  FunModule.SaveSerialPortConfig(ComboBox1.Text, Val(ComboBox2.Text), ComboBox3.Text, Val(ComboBox4.Text), Val(ComboBox5.Text), RDataMode, SDataMode, IsTiming, TimingTime, RDataLen, SDataLen, TextArea2.Text, ProjectPath & FunModule.SaveConfigFileName)
+  
+End
+
+
+Public Sub TextArea2_Change()
+
+  SaveConfig()
+
+End
+
+Public Sub ComboBox4_Click()
+
+  SaveConfig()
+
+End
+
+Public Sub ComboBox5_Click()
+
+  SaveConfig()
+
+End
+
+Public Sub ComboBox2_Click()
+
+  SaveConfig()
+
+End
+
+Public Sub ComboBox3_Click()
+
+  SaveConfig()
+
+End
+
+Public Sub LoadConfig()
+  
+  If Exist(ProjectPath & FunModule.SaveConfigFileName) = False Then
+    IsLoadConfigIng = False
+    SaveConfig()
+    MeScriptEditForm.LoadInitJsCode()
+    Return
+  Endif
+  
+  IsLoadConfigIng = True
+  
+  Dim JsonConfig As New Collection
+  Dim JsonConfigData As String = File.Load(ProjectPath & FunModule.SaveConfigFileName)
+  JsonConfig = JSON.Decode(JsonConfigData)
+  
+  If JsonConfig.Exist("ConfigVersion") = False Then
+    Message("Warning: Loading project configuration file error!")
+    Return
+  Endif
+  
+  Dim TConfigVersion As String = JsonConfig["ConfigVersion"]
+  If TConfigVersion <> FunModule.EseneConfigVersion Then
+    Message("Note: The configuration version of the current project is different from the configuration version of Esene. Some special situations may occur after continuing to use.")
+  Endif
+  
+  ComboBox1.Text = JsonConfig["PortName"]
+  ComboBox2.Text = JsonConfig["Speed"]
+  ComboBox3.Text = JsonConfig["Parity"]
+  ComboBox4.Text = JsonConfig["DataBits"]
+  ComboBox5.Text = JsonConfig["StopBits"]
+  
+  RDataMode = JsonConfig["ReceiveDataMode"] 
+  If RDataMode = 0 Then
+    RadioButton1.Value = True
+  Else If RDataMode = 1 Then
+    RadioButton2.Value = True
+  Endif
+  
+  SDataMode = JsonConfig["SendDataMode"] 
+  If SDataMode = 0 Then
+    RadioButton3.Value = True
+  Else If SDataMode = 1 Then
+    RadioButton4.Value = True
+  Endif
+  
+  TextBox1.Text = JsonConfig["TimingTime"]
+  CheckBox1.Value = JsonConfig["IsTiming"]
+  
+  Label8.Text = JsonConfig["ReceiveRecord"]
+  Label9.Text = JsonConfig["SendRecord"]
+  TextArea2.Text = JsonConfig["SendData"]
+  
+  MeScriptEditForm.LoadProjectJsCode()
+  
+  IsLoadConfigIng = False
+End
