@@ -9,8 +9,9 @@ Public TCode As String
 
 Public Sub Form_Resize()
 
-  Editor1.Move(0, 0, Me.Width, Me.Height)
-
+  'TextEdit1.Move(0, 0, Me.Width, Me.Height)
+  WebView1.Move(0, 0, Me.Width, Me.Height)
+  
 End
 
 Public Sub Form_Open()
@@ -28,35 +29,29 @@ End
 
 Public Sub LoadInitJsCode()
   
-  Editor1.Text = File.Load("Default-Code.js")
-  TCode = Editor1.Text
+  'TextEdit1.Text = File.Load("Default-Code.js")
+  'TCode = TextEdit1.Text
   
 End
 
 Public Sub LoadProjectJsCode()
   
-  Editor1.Text = File.Load(ProjectPath & FunModule.SaveJsFileName)
-  TCode = Editor1.Text
+  'TextEdit1.Text = File.Load(ProjectPath & FunModule.SaveJsFileName)
+  'TCode = TextEdit1.Text
   
 End
 
 Public Sub Form_Show()
 
-  
-  Editor1.Highlight = 7
-  Editor1.TabSize = 2
+  Dim DPath As String = Application.Path
+  If Right(DPath, 1) <> "/" Then DPath &= "/"
+  WebView1.HTML = File.Load(DPath & "MeEdit/index.html")
 
 End
 
-Public Sub Editor1_Change()
+'Public Sub TextEdit1_Change()
 
-  TCode = Editor1.Text
-  File.Save(ProjectPath & FunModule.SaveJsFileName, TCode)
+  'TCode = TextEdit1.Text
+  'File.Save(ProjectPath & FunModule.SaveJsFileName, TCode)
 
-End
-
-Public Sub Editor1_KeyPress()
-
-  
-
-End
+'End

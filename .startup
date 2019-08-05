@@ -2,13 +2,15 @@ FMain
 Esene
 0
 0
-1.0.5
+1.0.13
 
 gb.image
-gb.qt4
+gb.qt5
 gb.form
+gb.util
 gb.net
-gb.qt4.ext
-gb.qt4.webkit
+gb.qt5.ext
+gb.qt5.webkit
 gb.web
+gb.xml
 

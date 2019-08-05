@@ -4,6 +4,6 @@
   MoveScaled(0,0,88,51)
   Text = ("Display Area")
   { WebView1 WebView
-    MoveScaled(15,15,30,29)
+    MoveScaled(24,16,34,23)
   }
 }

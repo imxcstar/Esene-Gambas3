@@ -3,7 +3,7 @@
 { Form Form
   MoveScaled(0,0,82,50)
   Text = ("Script Edit")
-  { Editor1 Editor
-    MoveScaled(14,9,33,37)
+  { WebView1 WebView
+    MoveScaled(13,10,31,24)
   }
 }
